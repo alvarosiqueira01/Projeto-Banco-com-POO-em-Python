@@ -24,6 +24,9 @@ class Cliente():
             conta_nova = conta.ContaCorrente(self, numero)
             self._contas.append(conta_nova)
 
+    def get_contas(self):
+        return self._contas
+
     
         
 
@@ -40,6 +43,8 @@ class PessoaFisica(Cliente):
     
     def get_contas(self):
         return self._contas
+    
+    
 
 
         

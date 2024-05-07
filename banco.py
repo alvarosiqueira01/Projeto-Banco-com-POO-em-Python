@@ -1,4 +1,4 @@
-import cliente 
+import operacoes
 
 
 usuarios = []
@@ -11,6 +11,7 @@ Selecione a opção que deseja:
 
 [l] Fazer login de cliente
 [cc] Cadastrar cliente
+[lc] Listar Contas
 [q] Sair
 
 => """
@@ -57,81 +58,32 @@ while True:
 
                             if opcao == "d":
 
-                                print("\nDepósito")
-                                existe_conta = 0
-                                num_conta = int(input("Informe o número da conta a qual será feito o depósito: "))
-                                lista_contas_it = it_cpf.get_contas()
-
-                                for i in range(0,len(lista_contas_it)):
-
-                                    obtem_conta = lista_contas_it[i]
-                                    compara_nro = obtem_conta.get_numero()
-
-                                    if compara_nro == num_conta:
-                                        existe_conta = 1
-                                        conta = lista_contas_it[i]
-                                    
-                                if existe_conta == 0:
-                                    print("Erro: Não existe conta com o número fornecido.")
+                                depositou = operacoes.log_operacao(operacoes.deposito(it_cpf))
+                                if depositou == False:
                                     break
-
-                                valor_deposito = float(input("Digite o valor do depósito: "))
-                                conta.depositar(valor_deposito)
 
                             elif opcao == "s":    
 
-                                print("\nSaque")  
-                                existe_conta = 0
-                                num_conta = int(input("Informe o número da conta da qual será feito o saque: "))
-                                lista_contas_it = it_cpf.get_contas()
-
-                                for i in range(0,len(lista_contas_it)):
-
-                                    obtem_conta = lista_contas_it[i]
-                                    compara_nro = obtem_conta.get_numero()
-
-                                    if compara_nro == num_conta:
-                                        existe_conta = 1
-                                        conta = lista_contas_it[i]
-                                    
-                                if existe_conta == 0:
-                                    print("Erro: Não existe conta com o número fornecido.")
+                                sacou = operacoes.log_operacao(operacoes.saque(it_cpf))
+                                if depositou == False:
                                     break
-
-                                valor_saque = float(input("Digite o valor do saque: "))
-                                conta.sacar(valor_saque)
+                                
 
                             elif opcao == "e":
 
-                                print("\nExtrato")
-                                existe_conta = 0
-                                num_conta = int(input("Informe o número da conta: "))
-                                lista_contas_it = it_cpf.get_contas()
-
-                                for i in range(0,len(lista_contas_it)):
-
-                                    obtem_conta = lista_contas_it[i]
-                                    compara_nro = obtem_conta.get_numero()
-
-                                    if compara_nro == num_conta:
-
-                                        existe_conta = 1
-                                        conta = lista_contas_it[i]
-                                    
-                                if existe_conta == 0:
-
-                                    print("Erro: Não existe conta com o número fornecido.")
+                                tirou_extrato = operacoes.log_operacao(operacoes.extrato(it_cpf))
+                                if tirou_extrato == False:
                                     break
-
-                                print(conta.consultar_extrato())
-
+                                
 
                             elif opcao == "cc":
                                 
-                                numero_de_contas = numero_de_contas + 1
-                                it_cpf.adicionar_conta(numero_de_contas)
-                                print("Conta adicionada com sucesso! O número da conta é: ", numero_de_contas)
-
+                                cadastrou = operacoes.log_operacao(operacoes.cadastrar_conta(it_cpf, numero_de_contas))
+                                if cadastrou == False:
+                                    break
+                                else: 
+                                    numero_de_contas += 1
+                                
 
                             elif opcao == "v":
                                 break
@@ -153,45 +105,33 @@ while True:
                         
 
         elif opcao_menu_ini == "cc":    
-            
-            print("Para criar o usuário, serão solicitados: nome, data de nascimento, CPF e endereço (formado por logradouro, número, bairro, cidade e estado.)")
-            nome = input("Digite o nome do usuário: ")
-            data = input("Digite a data de nascimento do usuário: ")
-            cpf = input("Digite o CPF do usuário: ")
 
+            criou = operacoes.criar_usuario(usuarios)
+            if criou == False:
+                break
+            else:
+                usuarios = criou
+
+
+        elif opcao_menu_ini == "lc":    
+
+            existe_conta = False
             for i in range(0,len(usuarios)):
+                it = usuarios[i][0]
+                if len(it.get_contas()) > 0:
+                    existe_conta = True
 
-                it = usuarios[i]
-                if it[0].get_cpf() == cpf:
+            if existe_conta:
 
-                    print("Erro: Já existe um usuário com este CPF.")
-                    break
-                
-
-            logradouro = input("Digite o logradouro do usuário: ")
-            numero = input("Digite o número do endereço usuário: ")
-            bairro = input("Digite o bairro do usuário: ")
-            cidade = input("Digite a cidade do usuário: ")
-            estado = input("Digite a sigla do estado do usuário: ")
-            endereco = logradouro + ", " + numero + " - " + bairro + " - " + cidade + "/" + estado
-
-            senha = input("Defina uma senha para o cliente: ")
-            senha_auth = input("Confirme a senha: ")
-
-            if senha == senha_auth:
-
-                cliente_login = cliente.PessoaFisica(nome, cpf, data, endereco)
-                login = [cliente_login, senha]
-                usuarios.append(login) 
-                print("Usuário adicionado com sucesso!")
+                for dados in operacoes.ContaIterador(usuarios):
+                    print(dados)
 
             else:
 
-                print("Erro: as senhas digitadas diferem entre si. Tente novamente.")
+                print("\nErro: Não há contas cadastradas.")
                 break
             
-
-
+            
         elif opcao_menu_ini == "q":
             break
 
@@ -199,4 +139,3 @@ while True:
             print("Operação inválida, por favor selecione novamente a operação desejada.")        
 
 
-    

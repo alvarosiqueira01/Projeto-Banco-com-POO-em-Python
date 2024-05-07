@@ -11,6 +11,9 @@ class Conta():
     def get_numero(self):
         return self._numero
     
+    def get_agencia(self):
+        return self._agencia
+    
     def __init__(self, cliente, numero):
         self._cliente = cliente
         self._numero = numero
@@ -39,8 +42,9 @@ class Conta():
         else:
             return False
         
-    def consultar_extrato(self):
+    def consultar_extrato(self, transacao=None):
         print(f"Saldo atual da conta: R${self._saldo:.2f}.\nOperações anteriores:\n")
+        self._historico.gerar_relatorio(transacao)
         return self._historico._extrato
     
     def get_historico(self):
@@ -49,7 +53,7 @@ class Conta():
 
 class ContaCorrente(Conta):
     _limite = 500
-    _limite_saques = 3
+    _limite_saques = 0
 
     def get_limite(self):
         return self._limite
