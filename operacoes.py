@@ -209,12 +209,12 @@ class ContaIterador():
         self._index = 0 
         self._next_index = 0 
         self._lista_de_usuarios = usuarios
-        self._lista_de_contas = [[]]
+        self._lista_de_contas = []
         for i in range(0,len(usuarios)):
             
             for j in usuarios[i][0].get_contas():
 
-                self._lista_de_contas[i].append(j)
+                self._lista_de_contas[i][j].append(j)
 
 
 
