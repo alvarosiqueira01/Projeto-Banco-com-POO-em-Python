@@ -158,6 +158,8 @@ def extrato(usuario):
 
             if opcao == "d":
                 t = transacao.Deposito()
+                saldo = conta.get_saldo()
+                print(f"Saldo atual da conta: R${saldo:.2f}.\nOperações anteriores:\n")
                 print(conta.consultar_extrato(t))
                     
                 print("==============================")
@@ -165,13 +167,18 @@ def extrato(usuario):
             
             elif opcao == "s":
                 t = transacao.Saque()
+                saldo = conta.get_saldo()
+                print(f"Saldo atual da conta: R${saldo:.2f}.\nOperações anteriores:\n")
                 print(conta.consultar_extrato(t))
                     
                 print("==============================")
                 return True
             
             elif opcao == "t":
+                saldo = conta.get_saldo()
+                print(f"Saldo atual da conta: R${saldo:.2f}.\nOperações anteriores:\n")
                 print(conta.consultar_extrato())
+                    
                     
                 print("==============================")
                 return True
@@ -209,7 +216,7 @@ class ContaIterador():
         self._index = 0 
         self._next_index = 0 
         self._lista_de_usuarios = usuarios
-        self._lista_de_contas = [[]]
+        self._lista_de_contas = []
         for i in range(0,len(usuarios)):
             
             for j in usuarios[i][0].get_contas():
