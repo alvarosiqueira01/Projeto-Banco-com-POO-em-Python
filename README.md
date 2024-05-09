@@ -6,4 +6,4 @@ Além de todos os requisitos solicitados para esta resolução, ou seja: a aplic
 
 Foram implementadas todas as funcionalidades do banco, adicionando-se ainda um sistema simples para criação, login e autenticação de usuários. As classes estão modularizadas e o código principal é em "banco.py".
 
-Posteriormente, avançando nos módulos do mesmo curso, conforme os desafios propostos, foram adicionadas estruturas e funcionalidades à aplicação, implementando as estratégias fornecidadas pelo Python de decoradores, iteradores e geradores.
+Posteriormente, avançando nos módulos do mesmo curso, conforme os desafios propostos, foram adicionadas estruturas e funcionalidades à aplicação, implementando as estratégias fornecidadas pelo Python de decoradores, iteradores e geradores e funcionalidades de registro e controle de transações baseadas em data e hora.
