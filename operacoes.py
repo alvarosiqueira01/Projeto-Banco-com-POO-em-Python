@@ -221,7 +221,7 @@ class ContaIterador():
             
             for j in usuarios[i][0].get_contas():
 
-                self._lista_de_contas[i].append(j)
+                self._lista_de_contas[i][j].append(j)
 
 
 
