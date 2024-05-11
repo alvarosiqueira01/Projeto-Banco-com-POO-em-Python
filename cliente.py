@@ -44,6 +44,9 @@ class PessoaFisica(Cliente):
     def get_contas(self):
         return self._contas
     
+    def __repr__(self) -> str:
+        return f"<Cliente: {self._cpf}>"
+    
     
 
 

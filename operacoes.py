@@ -2,17 +2,52 @@ import cliente
 from datetime import datetime
 import time
 import transacao
+import os
+from pathlib import Path
 
 
 def log_operacao(func):
 
     def printa_operacao(*args):
         confirmacao = func(*args)
-        if confirmacao == True:
 
-            print(f"\nOperação de {func.__name__} realizada em", datetime.now())
+        if func.__name__ == "saque" or func.__name__ == "deposito":
+            
+            if confirmacao[0] == True:
 
+                hora = datetime.now()
+                c = args.__repr__()
+                mensagem = f"\nOperação de {func.__name__} no valor de {confirmacao[1]} realizada em {hora} pelo cliente {c}."
+
+                ROOT_PATH = Path(__file__).parent
+
+                try:
+                    with open(ROOT_PATH / "log.txt", "a") as log:
+                        log.write(mensagem)
+                except FileExistsError:
+                    pass
+
+        else:
+
+            if confirmacao == True:
+
+                hora = datetime.now()
+                c = args.__repr__()
+                mensagem = f"\nOperação de {func.__name__} realizada em {hora} pelo cliente {c}."
+
+                ROOT_PATH = Path(__file__).parent
+
+                try:
+                    with open(ROOT_PATH / "log.txt", "x") as log:
+                        log.write(mensagem)
+                except FileExistsError:
+                    pass
+                finally:
+                    with open(ROOT_PATH / "log.txt", "a") as log:
+                        log.write(mensagem)
+                        
         return confirmacao
+    
 
     return printa_operacao
 
@@ -79,12 +114,12 @@ def deposito(usuario):
     if existe_conta == 0:
         print("\nErro: Não existe conta com o número fornecido.")
         print("==============================")
-        return False
+        return (False, -1)
 
     valor_deposito = float(input("Digite o valor do depósito: "))
     conta.depositar(valor_deposito)
     print("==============================")
-    return True
+    return (True, valor_deposito)
 
 
 @log_operacao
@@ -107,12 +142,12 @@ def saque(usuario):
     if existe_conta == 0:
         print("\nErro: Não existe conta com o número fornecido.")
         print("==============================")
-        return False
+        return (False, -1)
 
     valor_saque = float(input("Digite o valor do saque: "))
     conta.sacar(valor_saque)
     print("==============================")
-    return True
+    return (True, valor_saque)
 
 
 @log_operacao
@@ -197,11 +232,11 @@ def cadastrar_conta(usuario, numero_de_contas):
     for i in range(0,3):
 
         print("Adicionando conta.")
-        time.sleep(1)
+        time.sleep(0.7)
         print("Adicionando conta..")
-        time.sleep(1)
+        time.sleep(0.7)
         print("Adicionando conta...")
-        time.sleep(1)
+        time.sleep(0.7)
 
     numero_de_contas = numero_de_contas + 1
     usuario.adicionar_conta(numero_de_contas)
@@ -210,45 +245,58 @@ def cadastrar_conta(usuario, numero_de_contas):
     return True
 
 
-
 class ContaIterador():
+
     def __init__(self, usuarios):
         self._index = 0 
-        self._next_index = 0 
         self._lista_de_usuarios = usuarios
         self._lista_de_contas = []
+
+        self._num_contas = 0
         for i in range(0,len(usuarios)):
             
             for j in usuarios[i][0].get_contas():
 
-                self._lista_de_contas[i][j].append(j)
+                self._lista_de_contas.append([usuarios[i][0].get_cpf(),j])
+                self._num_contas += 1
 
+        self._lista_de_contas.append([None,None])
+
+        
 
 
     def __iter__(self):
         return self
     
+
     def __next__(self):
-        index_conta = 0
-        self._dados_da_conta_atual = []
-        while self._lista_de_contas[self._index][index_conta+1]:
 
-            self._dados_da_conta_atual.append(self._lista_de_usuarios[self._index][0].get_cpf(), self._lista_de_contas[self._index][index_conta].get_agencia(), self._lista_de_contas[self._index][index_conta].get_numero())
+        if self._lista_de_contas[self._index+1][0] != None:
 
-        self._index += 1
-        self._next_index = self._index + 1
-        if not self._lista_de_usuarios[self._next_index][0]:
-            raise StopIteration
+            self._dados_da_conta_atual = [self._lista_de_contas[self._index][0], self._lista_de_contas[self._index][1].get_agencia(), self._lista_de_contas[self._index][1].get_numero()]
+            
+
+            mensagem = f"""
+
+            Agência: {self._dados_da_conta_atual[1]}
+            Número de conta: {self._dados_da_conta_atual[2]}
+            Titular: {self._dados_da_conta_atual[0]}
+
+            """
+
+            self._index += 1
+            return mensagem
+    
+        raise StopIteration
+            
+
         
-        mensagem = f"""
-
-        Agência: {self._dados_da_conta_atual[1]}
-        Número de conta: {self._dados_da_conta_atual[2]}
-        Titular: {self._dados_da_conta_atual[0]}
-
-        """
-
-        del self._dados_da_conta_atual
-
-        return mensagem
         
+
+
+
+
+
+
+
+
